@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleHub - Fashion E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .category-bg-1 { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .category-bg-2 { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .category-bg-3 { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        .category-bg-4 { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); }
+        
+        .promo-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .cart-slide {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .cart-slide.open {
+            transform: translateX(0);
+        }
+        
+        .modal {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .cart-badge {
+            animation: bounce 0.5s ease-in-out;
+        }
+        
+        .wishlist-heart {
+            transition: color 0.3s ease;
+        }
+        
+        .wishlist-heart.active {
+            color: #ef4444;
+        }
+        
+        .filter-btn.active {
+            background-color: #7c3aed;
+            color: white;
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
+            display: flex;
+            align-items: end;
+            padding: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-tshirt text-2xl text-purple-600"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">StyleHub</h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-purple-600 font-medium transition">Home</a>
+                    <a href="#products" class="text-gray-700 hover:text-purple-600 font-medium transition">Shop</a>
+                    <a href="#categories" class="text-gray-700 hover:text-purple-600 font-medium transition">Categories</a>
+                    <a href="#gallery" class="text-gray-700 hover:text-purple-600 font-medium transition">Gallery</a>
+                    <a href="#about" class="text-gray-700 hover:text-purple-600 font-medium transition">About</a>
+                    <a href="#contact" class="text-gray-700 hover:text-purple-600 font-medium transition">Contact</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleSearch()" class="text-gray-700 hover:text-purple-600 transition">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    <button onclick="toggleWishlist()" class="text-gray-700 hover:text-purple-600 transition relative">
+                        <i class="fas fa-heart text-xl"></i>
+                        <span id="wishlist-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button class="relative" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart text-xl text-gray-700 hover:text-purple-600 transition"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center cart-badge">0</span>
+                    </button>
+                    <button class="md:hidden">
+                        <i class="fas fa-bars text-xl text-gray-700"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div id="search-bar" class="hidden border-t bg-gray-50 py-4">
+            <div class="container mx-auto px-4">
+                <div class="relative max-w-md mx-auto">
+                    <input type="text" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen flex items-center justify-center text-white">
+        <div class="text-center">
+            <h2 class="text-6xl font-bold mb-6 fade-in-up">Discover Your Style</h2>
+            <p class="text-2xl mb-8 fade-in-up">Premium fashion for the modern lifestyle</p>
+            <div class="space-x-4 fade-in-up">
+                <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="bg-purple-600 hover:bg-purple-700 px-10 py-4 rounded-lg font-semibold text-lg transition transform hover:scale-105">
+                    Shop Now
+                </button>
+                <button onclick="document.getElementById('categories').scrollIntoView({behavior: 'smooth'})" class="border-2 border-white hover:bg-white hover:text-gray-800 px-10 py-4 rounded-lg font-semibold text-lg transition transform hover:scale-105">
+                    Explore Categories
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promotional Banner -->
+    <section class="promo-bg py-16 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-4xl font-bold mb-4">🎉 Summer Sale - Up to 70% Off!</h3>
+            <p class="text-xl mb-8">Limited time offer on selected items. Don't miss out!</p>
+            <button onclick="filterProducts('sale')" class="bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                Shop Sale Items
+            </button>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-6">Shop by Category</h2>
+                <p class="text-gray-600 text-xl">Find exactly what you're looking for</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="category-bg-1 bg-cover bg-center h-80 rounded-lg flex items-end p-6 cursor-pointer transform hover:scale-105 transition" onclick="filterProducts('women')">
+                    <div class="text-white">
+                        <h3 class="text-2xl font-bold mb-2">Women's Fashion</h3>
+                        <p class="text-lg">Elegant & Trendy</p>
+                    </div>
+                </div>
+                <div class="category-bg-2 bg-cover bg-center h-80 rounded-lg flex items-end p-6 cursor-pointer transform hover:scale-105 transition" onclick="filterProducts('men')">
+                    <div class="text-white">
+                        <h3 class="text-2xl font-bold mb-2">Men's Fashion</h3>
+                        <p class="text-lg">Classic & Modern</p>
+                    </div>
+                </div>
+                <div class="category-bg-3 bg-cover bg-center h-80 rounded-lg flex items-end p-6 cursor-pointer transform hover:scale-105 transition" onclick="filterProducts('accessories')">
+                    <div class="text-white">
+                        <h3 class="text-2xl font-bold mb-2">Accessories</h3>
+                        <p class="text-lg">Complete Your Look</p>
+                    </div>
+                </div>
+                <div class="category-bg-4 bg-cover bg-center h-80 rounded-lg flex items-end p-6 cursor-pointer transform hover:scale-105 transition" onclick="filterProducts('shoes')">
+                    <div class="text-white">
+                        <h3 class="text-2xl font-bold mb-2">Footwear</h3>
+                        <p class="text-lg">Step in Style</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-6">Featured Products</h2>
+                <p class="text-gray-600 text-xl mb-8">Discover our latest collection of premium fashion items</p>
+                
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button onclick="filterProducts('all')" class="filter-btn active px-6 py-2 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">All</button>
+                    <button onclick="filterProducts('women')" class="filter-btn px-6 py-2 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">Women</button>
+                    <button onclick="filterProducts('men')" class="filter-btn px-6 py-2 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">Men</button>
+                    <button onclick="filterProducts('accessories')" class="filter-btn px-6 py-2 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">Accessories</button>
+                    <button onclick="filterProducts('shoes')" class="filter-btn px-6 py-2 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">Shoes</button>
+                    <button onclick="filterProducts('sale')" class="filter-btn px-6 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition">Sale</button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="product-grid">
+                <!-- Products will be dynamically loaded here -->
+            </div>
+            
+            <div class="text-center mt-12">
+                <button onclick="loadMoreProducts()" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                    Load More Products
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Style Gallery Section -->
+    <section id="gallery" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-6">Style Gallery</h2>
+                <p class="text-gray-600 text-xl">Get inspired by our fashion lookbook</p>
+            </div>
+            
+            <div class="image-gallery">
+                <div class="gallery-item h-80">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Street Style" class="w-full h-full object-cover">
+                    <div class="gallery-overlay">
+                        <div>
+                            <h3 class="text-xl font-bold">Street Style</h3>
+                            <p>Casual urban fashion</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item h-80">
+                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Formal Wear" class="w-full h-full object-cover">
+                    <div class="gallery-overlay">
+                        <div>
+                            <h3 class="text-xl font-bold">Formal Wear</h3>
+                            <p>Professional elegance</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item h-80">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Summer Collection" class="w-full h-full object-cover">
+                    <div class="gallery-overlay">
+                        <div>
+                            <h3 class="text-xl font-bold">Summer Collection</h3>
+                            <p>Light and breezy</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item h-80">
+                    <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Accessories" class="w-full h-full object-cover">
+                    <div class="gallery-overlay">
+                        <div>
+                            <h3 class="text-xl font-bold">Accessories</h3>
+                            <p>Perfect finishing touches</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item h-80">
+                    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Evening Wear" class="w-full h-full object-cover">
+                    <div class="gallery-overlay">
+                        <div>
+                            <h3 class="text-xl font-bold">Evening Wear</h3>
+                            <p>Glamorous nights out</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item h-80">
+                    <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vintage Style" class="w-full h-full object-cover">
+                    <div class="gallery-overlay">
+                        <div>
+                            <h3 class="text-xl font-bold">Vintage Style</h3>
+                            <p>Timeless classics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-6">What Our Customers Say</h2>
+                <p class="text-gray-600 text-xl">Real reviews from real customers</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card text-white p-8 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b332c1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Sarah Johnson</h4>
+                            <div class="flex text-yellow-300">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"Amazing quality and fast shipping! I love my new dress and the customer service was exceptional."</p>
+                </div>
+                <div class="testimonial-card text-white p-8 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Mike Chen</h4>
+                            <div class="flex text-yellow-300">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"Best online shopping experience I've had. The clothes fit perfectly and the style is exactly what I was looking for."</p>
+                </div>
+                <div class="testimonial-card text-white p-8 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Emma Davis</h4>
+                            <div class="flex text-yellow-300">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"StyleHub has become my go-to fashion destination. Great prices, trendy styles, and excellent quality!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="bg-purple-600 py-16 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-4xl font-bold mb-4">Stay Updated with Latest Trends</h3>
+            <p class="text-xl mb-8">Subscribe to our newsletter and get 20% off your first order!</p>
+            <div class="max-w-md mx-auto flex">
+                <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-l-lg text-gray-800 focus:outline-none">
+                <button class="bg-white text-purple-600 px-6 py-3 rounded-r-lg font-semibold hover:bg-gray-100 transition">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-800 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-tshirt text-2xl text-purple-400"></i>
+                        <h3 class="text-2xl font-bold">StyleHub</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Your premier destination for fashion and style. Quality clothing for every occasion.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube text-xl"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Size Guide</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Shipping Info</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Returns</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Customer Service</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Track Order</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>123 Fashion Street, NY 10001</p>
+                        <p><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@stylehub.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 StyleHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-50 cart-slide">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Shopping Cart</h3>
+                <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6" style="height: calc(100vh - 200px);">
+            <div id="empty-cart" class="text-center py-12">
+                <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">Your cart is empty</p>
+            </div>
+        </div>
+        
+        <div id="cart-footer" class="border-t p-6 bg-gray-50">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-lg font-semibold">Total:</span>
+                <span id="cart-total" class="text-2xl font-bold text-purple-600">$0.00</span>
+            </div>
+            <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition mb-2">
+                Checkout
+            </button>
+            <button onclick="clearCart()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded-lg font-medium transition">
+                Clear Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div id="wishlist-sidebar" class="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-50 cart-slide">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Wishlist</h3>
+                <button onclick="toggleWishlist()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="wishlist-items" class="flex-1 overflow-y-auto p-6" style="height: calc(100vh - 140px);">
+            <div id="empty-wishlist" class="text-center py-12">
+                <i class="fas fa-heart text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">Your wishlist is empty</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="product-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center">
+        <div class="bg-white rounded-lg max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 id="modal-title" class="text-3xl font-bold text-gray-800"></h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <img id="modal-image" src="" alt="" class="w-full h-80 object-cover rounded-lg mb-4">
+                        <div class="grid grid-cols-4 gap-2">
+                            <img src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Thumbnail" class="w-full h-16 object-cover rounded cursor-pointer border-2 border-purple-600">
+                            <img src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Thumbnail" class="w-full h-16 object-cover rounded cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Thumbnail" class="w-full h-16 object-cover rounded cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Thumbnail" class="w-full h-16 object-cover rounded cursor-pointer">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <p id="modal-price" class="text-4xl font-bold text-purple-600"></p>
+                            <button id="modal-wishlist-btn" onclick="toggleWishlistItem(currentProductId)" class="text-2xl text-gray-400 hover:text-red-500 transition">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-600">(127 reviews)</span>
+                        </div>
+                        
+                        <p id="modal-description" class="text-gray-600 mb-6"></p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Size:</label>
+                                <select class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                    <option>XS</option>
+                                    <option>S</option>
+                                    <option selected>M</option>
+                                    <option>L</option>
+                                    <option>XL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Color:</label>
+                                <div class="flex space-x-2">
+                                    <div class="w-8 h-8 bg-black rounded-full border-2 border-gray-300 cursor-pointer"></div>
+                                    <div class="w-8 h-8 bg-blue-600 rounded-full border-2 border-gray-300 cursor-pointer"></div>
+                                    <div class="w-8 h-8 bg-red-600 rounded-full border-2 border-gray-300 cursor-pointer"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button id="modal-add-to-cart" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition">
+                                Add to Cart
+                            </button>
+                            <button class="px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 space-y-2 text-sm text-gray-600">
+                            <p><i class="fas fa-truck mr-2"></i>Free shipping on orders over $50</p>
+                            <p><i class="fas fa-undo mr-2"></i>30-day return policy</p>
+                            <p><i class="fas fa-shield-alt mr-2"></i>2-year warranty included</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleCart()"></div>
+    <div id="wishlist-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleWishlist()"></div>
+
+    <script>
+        // Extended product data with more items and categories
+        const products = [
+            {
+                id: 1,
+                name: "Classic Denim Jacket",
+                price: 89.99,
+                originalPrice: 129.99,
+                image: "https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "A timeless denim jacket perfect for any casual outfit. Made from premium cotton denim with a comfortable fit.",
+                category: "women",
+                onSale: true
+            },
+            {
+                id: 2,
+                name: "Elegant Summer Dress",
+                price: 129.99,
+                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Beautiful flowing summer dress made from lightweight fabric. Perfect for warm weather and special occasions.",
+                category: "women"
+            },
+            {
+                id: 3,
+                name: "Premium Leather Boots",
+                price: 199.99,
+                image: "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Handcrafted leather boots with superior comfort and durability. A perfect blend of style and functionality.",
+                category: "shoes"
+            },
+            {
+                id: 4,
+                name: "Casual Cotton T-Shirt",
+                price: 29.99,
+                originalPrice: 49.99,
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Soft and comfortable cotton t-shirt available in multiple colors. Essential wardrobe staple for everyday wear.",
+                category: "men",
+                onSale: true
+            },
+            {
+                id: 5,
+                name: "Designer Handbag",
+                price: 249.99,
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Luxurious designer handbag crafted from genuine leather. Spacious interior with multiple compartments.",
+                category: "accessories"
+            },
+            {
+                id: 6,
+                name: "Stylish Sunglasses",
+                price: 79.99,
+                originalPrice: 119.99,
+                image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "UV protection sunglasses with polarized lenses. Trendy design that complements any outfit.",
+                category: "accessories",
+                onSale: true
+            },
+            {
+                id: 7,
+                name: "Formal Business Suit",
+                price: 399.99,
+                image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Professional business suit tailored for the modern executive. Premium fabric with perfect fit.",
+                category: "men"
+            },
+            {
+                id: 8,
+                name: "Bohemian Maxi Dress",
+                price: 159.99,
+                image: "https://images.unsplash.com/photo-1566479179817-c0b5b4b8b1cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Flowing bohemian maxi dress with intricate patterns. Perfect for festivals and summer events.",
+                category: "women"
+            },
+            {
+                id: 9,
+                name: "Athletic Sneakers",
+                price: 149.99,
+                originalPrice: 199.99,
+                image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "High-performance athletic sneakers with advanced cushioning technology. Perfect for workouts and casual wear.",
+                category: "shoes",
+                onSale: true
+            },
+            {
+                id: 10,
+                name: "Vintage Leather Jacket",
+                price: 299.99,
+                image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Classic vintage-style leather jacket with authentic distressed finish. Timeless piece for any wardrobe.",
+                category: "men"
+            },
+            {
+                id: 11,
+                name: "Pearl Necklace Set",
+                price: 189.99,
+                image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Elegant pearl necklace and earring set. Perfect for formal occasions and special events.",
+                category: "accessories"
+            },
+            {
+                id: 12,
+                name: "Cozy Winter Sweater",
+                price: 89.99,
+                originalPrice: 129.99,
+                image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                description: "Warm and cozy winter sweater made from premium wool blend. Available in multiple colors.",
+                category: "women",
+                onSale: true
+            }
+        ];
+
+        let cart = [];
+        let wishlist = [];
+        let currentFilter = 'all';
+        let currentProductId = null;
+        let displayedProducts = 8;
+
+        // Load products on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+        });
+
+        function loadProducts() {
+            const productGrid = document.getElementById('product-grid');
+            let filteredProducts = products;
+            
+            if (currentFilter !== 'all') {
+                if (currentFilter === 'sale') {
+                    filteredProducts = products.filter(product => product.onSale);
+                } else {
+                    filteredProducts = products.filter(product => product.category === currentFilter);
+                }
+            }
+            
+            const productsToShow = filteredProducts.slice(0, displayedProducts);
+            productGrid.innerHTML = '';
+
+            productsToShow.forEach(product => {
+                const isInWishlist = wishlist.some(item => item.id === product.id);
+                const saleTag = product.onSale ? '<div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">SALE</div>' : '';
+                const originalPriceTag = product.originalPrice ? `<span class="text-gray-400 line-through text-lg mr-2">$${product.originalPrice}</span>` : '';
+                
+                const productCard = `
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden relative">
+                        ${saleTag}
+                        <div class="relative group">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                                <button onclick="viewProduct(${product.id})" class="bg-white text-gray-800 px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    Quick View
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-semibold text-gray-800">${product.name}</h3>
+                                <button onclick="toggleWishlistItem(${product.id})" class="wishlist-heart ${isInWishlist ? 'active' : ''} text-xl">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="mb-4">
+                                ${originalPriceTag}
+                                <span class="text-2xl font-bold text-purple-600">$${product.price}</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="viewProduct(${product.id})" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium transition">
+                                    View Details
+                                </button>
+                                <button onclick="addToCart(${product.id})" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                productGrid.innerHTML += productCard;
+            });
+        }
+
+        function filterProducts(category) {
+            currentFilter = category;
+            displayedProducts = 8;
+            
+            // Update filter button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            loadProducts();
+        }
+
+        function loadMoreProducts() {
+            displayedProducts += 4;
+            loadProducts();
+        }
+
+        function viewProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentProductId = productId;
+            const isInWishlist = wishlist.some(item => item.id === productId);
+
+            document.getElementById('modal-title').textContent = product.name;
+            document.getElementById('modal-image').src = product.image;
+            document.getElementById('modal-price').textContent = `$${product.price}`;
+            document.getElementById('modal-description').textContent = product.description;
+            
+            const wishlistBtn = document.getElementById('modal-wishlist-btn');
+            wishlistBtn.className = `text-2xl transition ${isInWishlist ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`;
+            
+            document.getElementById('modal-add-to-cart').onclick = () => {
+                addToCart(productId);
+                closeModal();
+            };
+
+            document.getElementById('product-modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').classList.remove('show');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+
+            updateCartUI();
+            animateCartBadge();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (!item) return;
+
+            item.quantity += change;
+            
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                updateCartUI();
+            }
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const emptyCart = document.getElementById('empty-cart');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            cartCount.textContent = totalItems;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div id="empty-cart" class="text-center py-12"><i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i><p class="text-gray-500">Your cart is empty</p></div>';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex items-center space-x-4 mb-4 p-4 border rounded-lg">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-purple-600 font-bold">$${item.price}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center">
+                                <i class="fas fa-minus text-xs"></i>
+                            </button>
+                            <span class="w-8 text-center font-semibold">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            cartTotal.textContent = `$${totalPrice.toFixed(2)}`;
+        }
+
+        function toggleWishlistItem(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingIndex = wishlist.findIndex(item => item.id === productId);
+            
+            if (existingIndex > -1) {
+                wishlist.splice(existingIndex, 1);
+            } else {
+                wishlist.push(product);
+            }
+
+            updateWishlistUI();
+            loadProducts(); // Refresh products to update heart icons
+            
+            // Update modal wishlist button if modal is open
+            if (currentProductId === productId) {
+                const isInWishlist = wishlist.some(item => item.id === productId);
+                const wishlistBtn = document.getElementById('modal-wishlist-btn');
+                wishlistBtn.className = `text-2xl transition ${isInWishlist ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`;
+            }
+        }
+
+        function updateWishlistUI() {
+            const wishlistCount = document.getElementById('wishlist-count');
+            const wishlistItems = document.getElementById('wishlist-items');
+
+            wishlistCount.textContent = wishlist.length;
+
+            if (wishlist.length === 0) {
+                wishlistItems.innerHTML = '<div id="empty-wishlist" class="text-center py-12"><i class="fas fa-heart text-4xl text-gray-300 mb-4"></i><p class="text-gray-500">Your wishlist is empty</p></div>';
+            } else {
+                wishlistItems.innerHTML = wishlist.map(item => `
+                    <div class="flex items-center space-x-4 mb-4 p-4 border rounded-lg">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-purple-600 font-bold">$${item.price}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="addToCart(${item.id})" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm">
+                                Add to Cart
+                            </button>
+                            <button onclick="toggleWishlistItem(${item.id})" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const cartOverlay = document.getElementById('cart-overlay');
+            const wishlistSidebar = document.getElementById('wishlist-sidebar');
+            
+            // Close wishlist if open
+            wishlistSidebar.classList.remove('open');
+            document.getElementById('wishlist-overlay').classList.add('hidden');
+            
+            cartSidebar.classList.toggle('open');
+            cartOverlay.classList.toggle('hidden');
+        }
+
+        function toggleWishlist() {
+            const wishlistSidebar = document.getElementById('wishlist-sidebar');
+            const wishlistOverlay = document.getElementById('wishlist-overlay');
+            const cartSidebar = document.getElementById('cart-sidebar');
+            
+            // Close cart if open
+            cartSidebar.classList.remove('open');
+            document.getElementById('cart-overlay').classList.add('hidden');
+            
+            wishlistSidebar.classList.toggle('open');
+            wishlistOverlay.classList.toggle('hidden');
+        }
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('search-bar');
+            searchBar.classList.toggle('hidden');
+        }
+
+        function animateCartBadge() {
+            const badge = document.getElementById('cart-count');
+            badge.classList.remove('cart-badge');
+            setTimeout(() => badge.classList.add('cart-badge'), 10);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('product-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize wishlist UI
+        updateWishlistUI();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'964d68a9306ba92b',t:'MTc1MzQ2NDg3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
